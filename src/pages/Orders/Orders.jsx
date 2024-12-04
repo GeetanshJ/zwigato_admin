@@ -18,8 +18,12 @@ const Orders = ({url}) => {
     }
   }
 
-  console.log(orders);
+  useEffect(() => {
+    fetchOrders();
+  },[])
 
+  console.log(orders);
+  
 
   return (
     <div className='order add'>
