@@ -18,6 +18,11 @@ const Orders = ({url}) => {
     }
   }
 
+  useEffect(() => {
+    fetchOrders();
+  },[])
+
+  console.log(orders);
   
 
   return (
