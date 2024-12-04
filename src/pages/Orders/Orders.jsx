@@ -1,59 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import './Orders.css'
+import React, { useEffect, useState } from 'react';
+import './Orders.css';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
-const Orders = ({url}) => {
 
-  const[orders,setOrders] = useState([]);
+const Orders = ({ url }) => {
+  const [orders, setOrders] = useState([]);
 
-  const fetchOrders = async () =>{
-    const response = await axios.get(url+"/api/order/list");
-    if(response.data.success){
-      setOrders(response.data.data);
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(url + "/api/order/list");
+
+      if (response.data.success) {
+        setOrders(response.data.data);
+      } else {
+        toast.error("Failed to fetch orders.");
+      }
+    } catch (error) {
+      toast.error("Error fetching orders.");
     }
-
-    else{
-      toast.error("Error");
-    }
-  }
+  };
 
   useEffect(() => {
     fetchOrders();
-  },[])
-
-  console.log(orders);
-  
+  }, []);
 
   return (
-    <div className='order add'>
-      <h3>Order Page</h3>
+    <div className='orders'>
+      <h3>All Orders</h3>
       <div className="order-list">
-        {
-          orders.map((order,index) => {
-            <div className="order-item" key={index}>
-              <img src={assets.parcel_icon} alt="" />
-              <div>
+        {orders.length === 0 ? (
+          <p>No orders found.</p>
+        ) : (
+          orders.map((order) => (
+            <div className="order-item" key={order._id}>
+              <img src={assets.parcel_icon} alt="Parcel Icon" className="order-item-img" />
+              <div className="order-item-details">
                 <div className="order-item-food">
-                  {
-                    order.items.map((item,index)=>{
-                      if(index == order.items.length - 1){
-                        return item.name + " x " + item.quantity;
-                      }
-
-                      else{
-                        return item.name + " x " + item.quantity + ", "
-                      }
-                    })
-                  }
+                  <strong>Items: </strong>
+                  {order.items.map((item, idx) => (
+                    <span key={idx}>
+                      {item.name} x {item.quantity}
+                      {idx < order.items.length - 1 && ", "}
+                    </span>
+                  ))}
+                </div>
+                <div className="order-item-status">
+                  <strong>Status:</strong> {order.status}
+                </div>
+                <div className="order-item-address">
+                  <strong>Address:</strong> {order.address.street}, {order.address.city}, {order.address.zipcode}, {order.address.country}
                 </div>
               </div>
             </div>
-          })
-        }
+          ))
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;
