@@ -8,7 +8,7 @@ const Orders = ({url}) => {
   const[orders,setOrders] = useState([]);
 
   const fetchOrders = async () =>{
-    const response = axios.get(url+"/api/order/list");
+    const response = await axios.get(url+"/api/order/list");
     if(response.data.success){
       setOrders(response.data.data);
     }
@@ -18,11 +18,6 @@ const Orders = ({url}) => {
     }
   }
 
-  useEffect(() => {
-    fetchOrders();
-  },[])
-
-  console.log(orders);
   
 
   return (
